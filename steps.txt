@@ -1,0 +1,5 @@
+1.Установка Node.js
+
+2.Установка Nodemon для перезапуску Node.js при змінах у файлах .
+npm  install Nodemon
+
