@@ -1,34 +1,15 @@
 
 
-Lesson 0.5 CMD
-https://youtu.be/zk1yMMKqKfA?t=102
-00:00
-
-перед командами ставимо пробіл
-
-d: --- Зміна диска
-cd --- перехід у папку
-
-cd.. перехід на одну папку вверх по дереву 
-( в батьківську папку)
-dir -- перегляд вмісту
-cls -- очистка консолі
-md test  -- створюємо папку test
-rd test  -- видаляємо папку test
-
-dir > t.txt -- запис результату команди dir 
-в файл t.txt
+1. Node.js
+2. npm install -g nodemon
+3. require('http')
+4. IconFinder
+5.http - модуль js для роботи з URL адресами 
+6. fs - модуль js для роботи з файловою системою
 
 
 
 
-
-
-
-
-Lesson 1
-https://www.youtube.com/watch?v=r-_-CJJ_GC4
-00:00
 
 
 

@@ -1,0 +1,7 @@
+Lesson 1
+https://www.youtube.com/watch?v=r-_-CJJ_GC4
+00:00
+
+
+1. Node.js
+2.npm install -g nodemon
