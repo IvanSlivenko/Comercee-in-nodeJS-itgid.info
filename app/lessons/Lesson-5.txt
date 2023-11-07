@@ -1,0 +1,13 @@
+https://youtu.be/3WhH7iF-oLU
+20:41
+
+Робота зі статикою
+
+npm init -
+
+npm install express --save 
+
+app.end() -- Завершити запит
+
+app.render() -- показати в браузері
+

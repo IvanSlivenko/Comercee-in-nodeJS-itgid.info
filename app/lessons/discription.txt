@@ -1,0 +1,44 @@
+
+
+1. Node.js
+2. npm install -g nodemon
+3. require('http')
+4. IconFinder
+5.http - модуль js для роботи з URL адресами 
+6. fs - модуль js для роботи з файловою системою
+7. 
+
+!!!  Перше розвертання проекту
+npm init -  розвертування проекту.
+
+!!!  Друге та наступні розвертання проекту
+npm install - установка модулів, що зазначені в package.json
+
+8. DEBUG
+http://expressjs.com/ru/guide/debugging.html#отладка-express
+set DEBUG=express:* & nodemon app.js - виводимо всі данні DEBUG
+
+set DEBUG=express:router & nodemon app.js DEBUG
+виводимо данні про роутинг з DEBUG
+
+set DEBUG=express:application & nodemon app.js
+виводимо данні про застосунок з DEBUG
+
+npm install PUG
+PUG - Шаблонізатор
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
