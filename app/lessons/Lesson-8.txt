@@ -17,3 +17,6 @@ MySQL Installer for Windows
 --
 MYSQLworcbench
 
+1. Додати нове з'єднання
+
+

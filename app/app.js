@@ -20,6 +20,3 @@ app.get('/', function (req, res) {
   });
 });
  
-app.get("/cat", function (req, res) {
-  res.end("cat");
-});
