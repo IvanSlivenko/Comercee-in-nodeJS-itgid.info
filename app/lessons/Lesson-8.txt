@@ -1,0 +1,19 @@
+https://youtu.be/Q0_Pv90b-ug?t=2
+08:00
+
+
+Установка та налаштування бази данних MYSQL
+основи роботи з MYSQL WORKBENCH
+створюємо та заповнюємо таблицю товарів та категорій
+
+
+1.
+https://dev.mysql.com/downloads/
+
+MySQL Installer for Windows
+
+Мій комп'ютер -  Керування - Служби MySQL80
+
+--
+MYSQLworcbench
+

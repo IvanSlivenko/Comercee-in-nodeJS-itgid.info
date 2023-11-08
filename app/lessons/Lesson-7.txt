@@ -3,3 +3,8 @@ https://youtu.be/GgW3gbrO398
 
 PUG
 
+app.set('view engine', 'pug');
+
+include header.pug -- підключаємо файли pug
+
+

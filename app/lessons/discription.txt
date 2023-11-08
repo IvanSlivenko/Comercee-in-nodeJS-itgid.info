@@ -27,6 +27,8 @@ set DEBUG=express:application & nodemon app.js
 npm install PUG
 PUG - Шаблонізатор
 
+app.set('view engine', 'pug');
+
 
 
 
