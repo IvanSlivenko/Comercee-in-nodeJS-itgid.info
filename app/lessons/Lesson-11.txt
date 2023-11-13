@@ -1,0 +1,7 @@
+https://youtu.be/QcH9adrWCLs?t=41
+24:46
+
+script(src='js/nav.js')
+
+
+
