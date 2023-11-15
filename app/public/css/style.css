@@ -4,11 +4,13 @@
 
 .wrap {
   background: #fff;
-  display: -webkit-flex;
-  display: -ms-flex;
+  /* display: -webkit-flex; */
+  /* display: -ms-flex; */
   display: flex;
   flex-direction: column;
   height: 100%;
+  
+
 }
 
 .text-center {
@@ -19,7 +21,6 @@
   flex-grow: 1;
   flex-shrink: 0;
   flex-basis: auto;
-
 }
 
 .site-header {
@@ -41,7 +42,6 @@
 
 .card {
   border: 1px solid #dedede;
- 
 }
 
 .card-images {
@@ -52,11 +52,11 @@
 }
 /* >>>>>>>>>>>>>>>>>>>>>NAV>>>>>>>>>>>>>>>>>>>>>>>>>>>>> */
 .site-nav {
-background-color: gray;
+/* background-color: gray; */
 width: 300px;
 min-height: 100vh;
 position: fixed;
-/* left: -300px; */
+left: -300px;
 top:0;
 z-index: 99999;
 padding: 10px;
