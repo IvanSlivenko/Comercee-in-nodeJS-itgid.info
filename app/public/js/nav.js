@@ -1,5 +1,17 @@
 console.log('nav.js');
 
+document.querySelector('.close-nav').onclick = closeNav;
+document.querySelector('.show-nav').onclick = showNav ;
+
+function closeNav() {
+  document.querySelector(".site-nav").style.left = "-320px";
+ 
+}
+
+function showNav() {
+    document.querySelector('.site-nav').style.left = "0";
+ }
+
 function getCategoryList(){ 
     fetch('/get-category-list', {
         method: 'POST'

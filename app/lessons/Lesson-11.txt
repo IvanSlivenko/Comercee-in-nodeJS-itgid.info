@@ -1,5 +1,5 @@
 https://youtu.be/QcH9adrWCLs?t=41
-33:59
+38:30
 
 script(src='js/nav.js')
 
