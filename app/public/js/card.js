@@ -11,17 +11,40 @@ function addToCart() {
     else { 
         cart[goodsId] = 1;
     }
-console.log(cart);
+    console.log(cart);
+    ajaxGetGoodsInfo();
 }
 
-function ajaxGetGoodsInfo() { 
-    fetch("get-goods-info", {
+
+function ajaxGetGoodsInfo(){ 
+    fetch("/get-goods-info", {
       method: "POST",
       body: JSON.stringify({ key: Object.keys(cart) }),
-      header: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
+      headers: {
+        'Accept': "application/json",
+        'Content-Type': "application/json"
+      }
     })
-    .then(function)
+    .then(function(response) { 
+        return response.text();
+    })
+    .then(function (body){
+        console.log(body);
+        showCart(JSON.parse(body))
+    })
+}
+
+function showCart(data) {
+    let out = '<table class="table table-striped table-cart"><tbody>';
+    let total = 0;
+    for (let key in cart) { 
+        out += `<tr><td><a href="/goods?id=${key}">${data[key]['name']}</a></tr>`;
+        out += `<tr><td><i class="far fa-minus-square cart-minus" data-goods_id="${key}"></i></td>`;
+        out += `<td>${cart[key]}</td>`;
+        out += `</tr>`;
+
+    }
+    out += '</tdody></table>';
+    document.querySelector('#cart-nav').innerHTML = out;
+    
 }
