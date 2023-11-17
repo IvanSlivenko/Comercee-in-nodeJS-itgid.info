@@ -34,11 +34,24 @@ app.listen(3000, function () {
 
 app.get('/', function (req, res) {
   
-  let cat = new Promise(function (resolve, reject) { 
-    con.query(
-      "" ,
-    );
-  })  
+  con.query(
+    "SELECT * FROM goods",
+    function (error, result) {
+    if (error) throw error;
+      // console.log(result);
+      let goods = {};
+      for (let i = 0; i < result.length; i++) { 
+        goods[result[i]['id']] = result[i];
+      }
+      // console.log(goods);
+      console.log(JSON.parse(JSON.stringify(goods)));
+      res.render("main", {
+        foo: "Hello",
+        bar: 7,
+        goods: JSON.parse(JSON.stringify(goods))
+      });
+  });
+  
 });
 
 app.get('/cat', function (req, res) { 
