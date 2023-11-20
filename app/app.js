@@ -179,9 +179,47 @@ app.post("/finish-order", function (req, res) {
   
 });
 
-async function sendMail(data, result){ 
-  let res = '<h2> Order in lite shop</h2>';
-  let toral = 0;
-  
+async function sendMail(data, result){
+  let res = "<h2> Order in lite shop</h2>";
+  let total = 0;
+  for (let i = 0; i < result.length; i++) {
+    res += `<p>${result[i]["name"]} - ${data.key[result[i]["id"]]} - ${
+      result[i]["cost"] * data.key[result[i]["id"]]
+    } uah </p>`;
+    total += result[i]["cost"] * data.key[result[i]["id"]];
+  }
+  console.log(res);
+  res += `<hr>`;
+  res += `Total :${total} uah`;
+  res += `<hr> Phone:${data.phone}`;
+  res += `<hr> UserName: ${data.username}`;
+  res += `<hr> Address: ${data.address}`;
+  res += `<hr> Email: ${data.email}`;
+
+  let testAccount = await nodemailer.createTestAccount();
+  const transporter = nodemailer.createTransport({
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false,
+    auth: {
+      user: testAccount.user,
+      pass: testAccount.pass,
+    },
+  });
+
+  let mailOption = {
+    from: "<ivan8822@ukr.net>",
+    to: "ivan8822@ukr.net," + data.email,
+    subject: "Lite shop order",
+    text: 'Hello world',
+    html: res
+  };
+
+  let info = await transporter.sendMail(mailOption);
+  console.log("MessageSent: %s", info.messageId);
+  console.log("PreviewSent: %s", nodemailer.getTestMessageUrl(info));
+  return true;
+
 }
+
  
