@@ -18,7 +18,6 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 /**
 Налаштовуємо модуль 
 */
-
 app.use(express.json());
 let con = mysql.createPool({
   host: 'localhost',
@@ -27,11 +26,9 @@ let con = mysql.createPool({
   database:'market'
 
 });
-
 /*
 Підключаємо nodemailer
 */
-
 const nodemailer = require("nodemailer");
 
 app.listen(3000, function () {
@@ -167,6 +164,16 @@ app.post("/finish-order", function (req, res) {
   }
 });
 
+app.get("/admin", function (req, res) {
+    res.render("admin", {});
+});
+
+app.get("/admin-order", function (req, res) {
+  res.render("admin-order", {});
+});
+
+
+
 async function sendMail(data, result) {
   let res = "<h2> Order in lite shop</h2>";
   let total = 0;
@@ -214,8 +221,32 @@ function saveOrder(data, result) {
   // result - інформація про товар
   let sql;
   sql = "INSERT INTO user_info (user_name, user_phone, user_email, address) VALUES ('" + data.username + "','" + data.phone + "','" + data.email + "', '" + data.address + "')"
-  con.query(sql, function (error, result) {
+  con.query(sql, function (error, resultQuery) {
     if (error) throw error;
     console.log('1 user info saved ');
+    console.log(resultQuery);
+    console.log(resultQuery.insertId);
+    let userId = resultQuery.insertId; 
+    date = new Date() / 1000;
+    for (let i = 0; i < result.length; i++) { 
+      sql =
+        "INSERT INTO shop_order (date, user_id, goods_id, goods_cost ,goods_amount, total) VALUES ("
+      +date +
+      ","
+      + userId +
+      ","
+      + result[i]["id"] +
+      ","
+      + result[i]["cost"] +
+      ","
+      + data.key[result[i]['id']] +
+      ","
+      + data.key[result[i]['id']] * result[i]['cost'] +
+        ")";
+      con.query(sql, function (error, resultQuery) { 
+        if (error) throw error;
+        console.log('1 goods saved');
+      })
+    }
   });
 }
