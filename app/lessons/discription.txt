@@ -30,6 +30,15 @@ PUG - Шаблонізатор
 app.set('view engine', 'pug');
 
 
+let con = mysql.createPool({
+  host: 'localhost',
+  user: 'yv411438_nodemarket2',
+  password: 'Iv07092006sl',
+  database:'yv411438_nodemarket'
+
+});
+
+
 
 
 
