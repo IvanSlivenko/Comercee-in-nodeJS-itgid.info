@@ -1,3 +1,10 @@
 https://youtu.be/HFhnc0nBxKw?t=1033
-23 : 57
+45 : 27
+
+coockie
+
+npm install cookie
+
+
+
 

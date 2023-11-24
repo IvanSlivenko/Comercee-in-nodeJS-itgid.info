@@ -1,5 +1,8 @@
 let express = require("express");
 let app = express();
+let cookieParser = require('cookie-parser');
+let admin = require('./admin');
+
 app.use(express.static("public"));
 
 /**
@@ -19,6 +22,14 @@ process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 Налаштовуємо модуль 
 */
 app.use(express.json());
+app.use(express.urlencoded());
+app.use(cookieParser());
+
+/*
+Підключаємо nodemailer
+*/
+const nodemailer = require("nodemailer");
+
 let con = mysql.createPool({
   host: 'localhost',
   user: 'root',
@@ -26,10 +37,8 @@ let con = mysql.createPool({
   database:'market'
 
 });
-/*
-Підключаємо nodemailer
-*/
-const nodemailer = require("nodemailer");
+
+
 
 app.listen(3000, function () {
   console.log("node express work on 3000");
@@ -165,12 +174,39 @@ app.post("/finish-order", function (req, res) {
 });
 
 app.get("/admin", function (req, res) {
-    res.render("admin", {});
+ 
+  admin(req, res, con,
+    function () { 
+      res.render("admin", {});
+    }
+  
+  );
+  // console.log(req.cookies.hash);
+
+  // if (req.cookies.hash== undefined || req.cookies.id == undefined) {
+  //     res.redirect("/login");
+  // }
+  // con.query(
+  //   'SELECT * FROM `user` WHERE id=' + req.cookies.id + ' and hash="' + req.cookies.hash + '"',
+  //   function (error, result) {
+  //     if (error) reject(error);
+  //     console.log('result',result);
+  //     if (result.length == 0) {
+  //       console.log("error user not found");
+  //       res.redirect("/login");
+  //     }
+  //     else {
+  //         res.render("admin", {});
+  //     }
+  //   });
+  //   //res.render("admin", {});
 });
 
 app.get("/admin-order", function (req, res) {
-  con.query(
-    `select 
+  admin(req, res, con,
+    function () { 
+      con.query(
+        `select 
         shop_order.id as id,
         shop_order.user_id as user_id,
         shop_order.goods_id as goods_id,
@@ -188,12 +224,16 @@ app.get("/admin-order", function (req, res) {
     LEFT JOIN
         user_info
     ON shop_order.user_id = user_info.id ORDER BY DATE DESC `,
-    function (error, result, fields) {
-      if (error) throw error;
-      console.log(result);
-      res.render("admin-order", { order: JSON.parse(JSON.stringify(result)) });
-    }
-  );
+        function (error, result, fields) {
+          if (error) throw error;
+          console.log(result);
+          res.render("admin-order", {
+            order: JSON.parse(JSON.stringify(result)),
+          });
+        }
+      );
+    })
+  
 });
 
 /**
@@ -204,17 +244,36 @@ app.get("/login", function (req, res) {
 });
 
 app.post("/login", function (req, res) {
-  res.end('work');
+  // res.end('work');
+  console.log('==========================================');
   console.log(req.body);
   console.log(req.body.login);
   console.log(req.body.password);
+  console.log('==========================================');
   con.query(
     'SELECT * FROM `user` WHERE login="' + req.body.login + '" and password="' + req.body.password + '"' ,
     function (error, result) {
       if (error) reject(error);
-      console.log(result);
-    });
-  
+
+      if (result.length == 0) {
+        console.log('error user not found');
+        res.redirect('/login');
+      }
+      else {
+        result = JSON.parse(JSON.stringify(result));
+
+        res.cookie("hash", "tratata");
+        res.cookie("id", result[0]["id"]);
+        /**
+         * write hash to db
+         */
+        sql = "UPDATE user  SET hash='tratata' WHERE id=" + result[0]["id"];
+        con.query(sql, function (error, resultQuery) {
+          if (error) throw error;
+          res.redirect("/admin");
+        });
+      };
+    });  
 });
 
 function saveOrder(data, result) { 
