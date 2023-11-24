@@ -168,12 +168,6 @@ app.get("/admin", function (req, res) {
     res.render("admin", {});
 });
 
-app.post("/login", function (req, res) {
-  //res.render("admin", {});
-  res.end('Work');
-  console.log(req.body);
-});
-
 app.get("/admin-order", function (req, res) {
   con.query(
     `select 
@@ -202,9 +196,61 @@ app.get("/admin-order", function (req, res) {
   );
 });
 
+/**
+* login form ============================================
+*/
 app.get("/login", function (req, res) {
   res.render("login", {});
 });
+
+app.post("/login", function (req, res) {
+  res.end('work');
+  console.log(req.body);
+  console.log(req.body.login);
+  console.log(req.body.password);
+  con.query(
+    'SELECT * FROM `user` WHERE login="' + req.body.login + '" and password="' + req.body.password + '"' ,
+    function (error, result) {
+      if (error) reject(error);
+      console.log(result);
+    });
+  
+});
+
+function saveOrder(data, result) { 
+  // data - інформація про користувача з  форми
+  // result - інформація про товар
+  let sql;
+  sql = "INSERT INTO user_info (user_name, user_phone, user_email, address) VALUES ('" + data.username + "','" + data.phone + "','" + data.email + "', '" + data.address + "')"
+  con.query(sql, function (error, resultQuery) {
+    if (error) throw error;
+    console.log('1 user info saved ');
+    console.log(resultQuery);
+    console.log(resultQuery.insertId);
+    let userId = resultQuery.insertId; 
+    date = new Date() / 1000;
+    for (let i = 0; i < result.length; i++) { 
+      sql =
+        "INSERT INTO shop_order (date, user_id, goods_id, goods_cost ,goods_amount, total) VALUES ("
+      +date +
+      ","
+      + userId +
+      ","
+      + result[i]["id"] +
+      ","
+      + result[i]["cost"] +
+      ","
+      + data.key[result[i]['id']] +
+      ","
+      + data.key[result[i]['id']] * result[i]['cost'] +
+        ")";
+      con.query(sql, function (error, resultQuery) { 
+        if (error) throw error;
+        console.log('1 goods saved');
+      })
+    }
+  });
+}
 
 async function sendMail(data, result) {
   let res = "<h2> Order in lite shop</h2>";
@@ -246,39 +292,4 @@ async function sendMail(data, result) {
   console.log("MessageSent: %s", info.messageId);
   console.log("PreviewSent: %s", nodemailer.getTestMessageUrl(info));
   return true;
-}
-
-function saveOrder(data, result) { 
-  // data - інформація про користувача з  форми
-  // result - інформація про товар
-  let sql;
-  sql = "INSERT INTO user_info (user_name, user_phone, user_email, address) VALUES ('" + data.username + "','" + data.phone + "','" + data.email + "', '" + data.address + "')"
-  con.query(sql, function (error, resultQuery) {
-    if (error) throw error;
-    console.log('1 user info saved ');
-    console.log(resultQuery);
-    console.log(resultQuery.insertId);
-    let userId = resultQuery.insertId; 
-    date = new Date() / 1000;
-    for (let i = 0; i < result.length; i++) { 
-      sql =
-        "INSERT INTO shop_order (date, user_id, goods_id, goods_cost ,goods_amount, total) VALUES ("
-      +date +
-      ","
-      + userId +
-      ","
-      + result[i]["id"] +
-      ","
-      + result[i]["cost"] +
-      ","
-      + data.key[result[i]['id']] +
-      ","
-      + data.key[result[i]['id']] * result[i]['cost'] +
-        ")";
-      con.query(sql, function (error, resultQuery) { 
-        if (error) throw error;
-        console.log('1 goods saved');
-      })
-    }
-  });
 }
