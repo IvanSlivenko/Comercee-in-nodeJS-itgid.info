@@ -1,4 +1,4 @@
-module.exports = function (req, res, con, callback) { 
+module.exports = function (req, res, con, next) { 
     console.log(req.cookies.hash);
 
     if (req.cookies.hash == undefined || req.cookies.id == undefined) {
@@ -15,8 +15,9 @@ module.exports = function (req, res, con, callback) {
           console.log("error user not found");
           res.redirect("/login");
         } else {
-            callback();
-        //   res.render("admin", {});
+            //callback();
+          //   res.render("admin", {});
+          next();
         }
       }
     );

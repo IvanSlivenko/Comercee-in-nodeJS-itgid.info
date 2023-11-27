@@ -44,10 +44,18 @@ app.listen(3000, function () {
   console.log("node express work on 3000");
 });
 
+app.use(function (req, res, next) {
+  if (req.originalUrl == "/admin" || req.originalUrl == "/admin-order") {
+    admin(req, res, con, next);
+  } else {
+    next();
+  }
+});
+
 app.get("/", function (req, res) {
   let cat = new Promise(function (resolve, reject) {
     con.query(
-      "SELECT id, name, cost, image, category FROM (select id,name,cost,image,category, if(if(@curr_category != category, @curr_category := category, '') != '', @k := 0, @k := @k+1) as ind  FROM goods, (SELECT @curr_category := '') v ) goods WHERE ind < 3",
+      "SELECT id,slug ,name, cost, image, category FROM (select id,slug ,name,cost,image,category, if(if(@curr_category != category, @curr_category := category, '') != '', @k := 0, @k := @k+1) as ind  FROM goods, (SELECT @curr_category := '') v ) goods WHERE ind < 3",
 
       function (error, result, fied) {
         if (error) return reject(error);
@@ -104,15 +112,30 @@ app.get("/cat", function (req, res) {
   });
 });
 
-app.get("/goods", function (req, res) {
-  console.log(req.query.id);
+app.get("/goods/*", function (req, res) {
+  console.log("work");
+  console.log(req.params);
   con.query(
-    "SELECT * FROM goods WHERE id=" + req.query.id,
+    // "SELECT * FROM goods WHERE id=" + req.query.id,
+    'SELECT * FROM goods WHERE slug="' + req.params['0'] + '"',
     function (error, result, fields) {
       if (error) throw error;
-      res.render("goods", { goods: JSON.parse(JSON.stringify(result)) });
-    }
-  );
+      console.log(result);
+      
+      result = JSON.parse(JSON.stringify(result));
+      console.log(result[0]['id']);
+      con.query(
+        "SELECT * FROM images WHERE goods_id=" + result[0]["id"],
+        function (error, goodsImages, fields) {
+          if (error) throw error;
+          console.log(goodsImages);
+          goodsImages = JSON.parse(JSON.stringify(goodsImages));
+
+          res.render("goods", { goods: result, goods_images: goodsImages });
+          // res.end();
+          // res.render("goods", { goods: JSON.parse(JSON.stringify(result)) });
+        });
+    });
 });
 
 app.get("/order", function (req, res) {
@@ -174,37 +197,10 @@ app.post("/finish-order", function (req, res) {
 });
 
 app.get("/admin", function (req, res) {
- 
-  admin(req, res, con,
-    function () { 
-      res.render("admin", {});
-    }
-  
-  );
-  // console.log(req.cookies.hash);
-
-  // if (req.cookies.hash== undefined || req.cookies.id == undefined) {
-  //     res.redirect("/login");
-  // }
-  // con.query(
-  //   'SELECT * FROM `user` WHERE id=' + req.cookies.id + ' and hash="' + req.cookies.hash + '"',
-  //   function (error, result) {
-  //     if (error) reject(error);
-  //     console.log('result',result);
-  //     if (result.length == 0) {
-  //       console.log("error user not found");
-  //       res.redirect("/login");
-  //     }
-  //     else {
-  //         res.render("admin", {});
-  //     }
-  //   });
-  //   //res.render("admin", {});
+  res.render("admin", {});
 });
-
+ 
 app.get("/admin-order", function (req, res) {
-  admin(req, res, con,
-    function () { 
       con.query(
         `select 
         shop_order.id as id,
@@ -232,8 +228,6 @@ app.get("/admin-order", function (req, res) {
           });
         }
       );
-    })
-  
 });
 
 /**
@@ -261,13 +255,13 @@ app.post("/login", function (req, res) {
       }
       else {
         result = JSON.parse(JSON.stringify(result));
-
-        res.cookie("hash", "tratata");
+        let hash = makeHash(32);
+        res.cookie("hash", hash);
         res.cookie("id", result[0]["id"]);
         /**
          * write hash to db
          */
-        sql = "UPDATE user  SET hash='tratata' WHERE id=" + result[0]["id"];
+        sql = "UPDATE user  SET hash='"+hash+ "' WHERE id=" + result[0]["id"];
         con.query(sql, function (error, resultQuery) {
           if (error) throw error;
           res.redirect("/admin");
@@ -352,3 +346,22 @@ async function sendMail(data, result) {
   console.log("PreviewSent: %s", nodemailer.getTestMessageUrl(info));
   return true;
 }
+
+/*
+Генератор випадкових стрічок ===============================
+*/ 
+function makeHash(length) {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
+/*
+Генератор випадкових стрічок ===============================
+*/ 
